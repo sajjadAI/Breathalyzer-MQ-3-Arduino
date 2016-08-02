@@ -3,7 +3,6 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
-// If using software SPI (the default case):
 #define OLED_MOSI   9
 #define OLED_CLK   10
 #define OLED_DC    11
@@ -11,7 +10,7 @@
 #define OLED_RESET 13
 Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 
-const int gasPin = A0; //GAS sensor output pin to Arduino analog A0 pin
+const int gasPin = A0;
 
 #define NUMFLAKES 10
 #define XPOS 0
@@ -44,33 +43,41 @@ static const unsigned char PROGMEM logo16_glcd_bmp[] =
 
 void setup()   {                
   Serial.begin(9600);
-
-  // by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
   display.begin(SSD1306_SWITCHCAPVCC);
-  // init done
-  
-  
 }
 
 void showValue(){
   display.clearDisplay();
   display.setTextColor(WHITE);
-  display.setTextSize(2);
-  display.setCursor(50, 5);
+  display.setTextSize(3);
+  display.setCursor(43, 0);
   display.print(analogRead(gasPin));
-
-  display.setCursor(35, 30);
-  
+  display.setCursor(40, 33);
+  display.setTextSize(2);
    if(analogRead(gasPin) < 250 ){
     display.println("Sober");
    }
-  display.display();
 }
 
-void showStat(){
-  
+void showTime() {
+  int h,m,s;
+  s = millis() / 1000;
+  m = s / 60;
+  h = s / 3600;
+  s = s - m * 60;
+  m = m - h * 60;
+  display.setTextSize(1.75);
+  display.setCursor(50, 55);
+  display.print(h);
+  display.print(":");
+  display.print(m);
+  display.print(":");
+  display.print(s);
 }
+
 
 void loop(){
   showValue();
+  showTime();
+  display.display();
   }
